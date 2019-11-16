@@ -55,7 +55,7 @@ makeVType ty0 =
                 (makeVType ty1)
                 (List.map
                     (\( effects, ty ) ->
-                        ( maybe [] (List.map makeVType) effects
+                        ( List.map makeVType effects
                         , makeVType ty
                         )
                     )

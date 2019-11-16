@@ -182,20 +182,20 @@ typeUnApps ty0 =
 {-| Haskell function: Unison.Type.unEffectfulArrows
 Difference: this function takes the rhs of the first arrow, not the whole thing
 Postcondition: non-empty list
-TODO(elliott) strip off the 'Maybe' from the returned list of effect types
 -}
 typeUnEffectfulArrows :
     Type var
-    -> List ( Maybe (List (Type var)), Type var )
+    -> List ( (List (Type var)), Type var )
+
 typeUnEffectfulArrows ty =
     case ty.out of
         TypeTm (TypeEffect ty1 ty2) ->
             case ty1.out of
                 TypeTm (TypeEffects es) ->
                     let
-                        es2 : Maybe (List (Type var))
+                        es2 : List (Type var)
                         es2 =
-                            Just (List.concatMap typeFlattenEffects es)
+                            List.concatMap typeFlattenEffects es
                     in
                     case ty2.out of
                         TypeTm (TypeArrow ty3 ty4) ->
@@ -205,13 +205,13 @@ typeUnEffectfulArrows ty =
                             [ ( es2, ty2 ) ]
 
                 _ ->
-                    [ ( Nothing, ty ) ]
+                    [ ([], ty ) ]
 
         TypeTm (TypeArrow ty3 ty4) ->
-            ( Nothing, ty3 ) :: typeUnEffectfulArrows ty4
+            ( [], ty3 ) :: typeUnEffectfulArrows ty4
 
         _ ->
-            [ ( Nothing, ty ) ]
+            [ ( [], ty ) ]
 
 
 {-| Haskell type: Unison.Type.unForalls
